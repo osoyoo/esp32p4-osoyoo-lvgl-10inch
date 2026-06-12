@@ -8,7 +8,7 @@ Covers **Windows** and **macOS**. Where steps differ, look for the
 🪟 **Windows** and  **macOS** markers.
 
 **Hardware this targets**
-- Board: **Waveshare ESP32-P4-Module-DEV-KIT** (2-lane MIPI-DSI, GPIO7=SDA, GPIO8=SCL)
+- Board: **Espressif ESP32-P4-Module-DEV-KIT** (2-lane MIPI-DSI, GPIO7=SDA, GPIO8=SCL)
 - Panel: **OSOYOO 10.1" 800×1280** portrait, **ILI9881C** controller, **GT9271** touch
 - The panel's reset + backlight are driven over I²C by an on-panel MCU at address `0x45`
 
