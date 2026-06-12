@@ -1,18 +1,14 @@
 # OSOYOO 10.1" DSI panel on Waveshare ESP32-P4-Module-DEV-KIT (ESP-IDF + LVGL)
 
-Drives the **OSOYOO 10.1" 800×1280 MIPI-DSI touchscreen** (ILI9881C controller +
-Goodix GT9271 touch) from a **Waveshare ESP32-P4-Module-DEV-KIT**, and shows a
+Drives the **OSOYOO 10.1" 800×1280 MIPI-DSI touchscreen** from a **Espressif ESP32-P4-Module-DEV-KIT**, and shows a
 SquareLine-style LVGL UI: a **"Hello" label** and a **button that toggles it**.
-
-The panel register/timing values and the I2C power/reset/backlight protocol were
-ported directly from the OSOYOO Linux DRM driver in the parent folder
-(`osoyoo-panel-dsi.c`, `osoyoo-panel-regulator.c`).
+ 
 
 ---
 
 ## 1. Hardware
 
-Plug the panel's 15-pin DSI FPC into the dev kit's DSI connector. That single FPC
+Plug the panel's 15-pin DSI FPC into the Espressif ESP32-P4-dev-kit's DSI connector. That single FPC
 carries everything — no extra wiring:
 
 | Signal              | Where it goes                                        |
@@ -20,7 +16,7 @@ carries everything — no extra wiring:
 | DSI clock + 2 lanes | ESP32-P4 MIPI-DSI (the kit exposes **2 data lanes**) |
 | Touch / backlight I2C | **SDA = GPIO7, SCL = GPIO8** (inside the DSI connector) |
 | Panel reset + backlight | "display MCU" at I2C **0x45** (on the panel PCB) |
-| Touch controller    | Goodix GT9271 at I2C **0x5D**                         |
+                      |
 
 > The OSOYOO panel has its own little MCU at `0x45` that owns the LCD reset line
 > and the PWM backlight (registers `0x02` = reset bits, `0x03` = backlight). There
@@ -88,19 +84,3 @@ can replace them with your own design:
    project's `ui_events.c`.
 6. `main.c` already calls `ui_init()` under the LVGL lock — no change needed.
 
----
-
-## 5. Troubleshooting
-
-- **`display MCU 0x45 not found on I2C`** — the DSI FPC isn't fully seated, or it's
-  in the wrong connector. Re-seat it; the contacts for GPIO7/GPIO8 must mate.
-- **Black screen but no I2C error** — usually a timing/lane issue. Confirm the kit
-  is the 2-lane DSI variant; if your unit needs slightly different timing, tweak
-  `dpi_clock_freq_mhz` / porches in `osoyoo_panel.c`.
-- **Touch not responding** — the GT911 driver also covers the GT9271, but if your
-  panel reports a different address, it's auto-probed at `0x5D`/`0x14`. The display
-  still comes up without touch (touch init is best-effort).
-- **Colors look byte-swapped** — enable `CONFIG_LV_COLOR_16_SWAP=y`
-  (`idf.py menuconfig` → Component config → LVGL → Color settings → Swap the 2 bytes of RGB565).
-- **`undefined reference to lv_font_montserrat_48`** — make sure
-  `CONFIG_LV_FONT_MONTSERRAT_48=y` survived (re-run `idf.py reconfigure`).
