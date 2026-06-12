@@ -1,4 +1,4 @@
-# Complete Tutorial — OSOYOO 10.1" DSI + LVGL on Espressif ESP32-P4-DEV-Kit
+# Complete Tutorial — OSOYOO 10.1" 800x1280 DSI/Mipi Touch Screen+ LVGL on Espressif ESP32-P4-DEV-Kit
 
 From-scratch guide: install **SquareLine Studio**, **VS Code**, the **ESP-IDF
 extension + ESP-IDF 5.5.1**, design a UI in SquareLine, export the **LVGL** files,
