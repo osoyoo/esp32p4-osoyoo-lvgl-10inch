@@ -1,4 +1,4 @@
-# OSOYOO 10.1" DSI panel on Waveshare ESP32-P4-Module-DEV-KIT (ESP-IDF + LVGL)
+# OSOYOO 10.1" DSI panel on Espressif ESP32-P4-Module-DEV-KIT (ESP-IDF + LVGL)
 
 Drives the **OSOYOO 10.1" 800×1280 MIPI-DSI touchscreen** from a **Espressif ESP32-P4-Module-DEV-KIT**, and shows a
 SquareLine-style LVGL UI: a **"Hello" label** and a **button that toggles it**.
