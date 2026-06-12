@@ -1,0 +1,12 @@
+## Managed component dependencies (downloaded by `idf.py reconfigure`/`build`).
+dependencies:
+  idf:
+    version: ">=5.5.0"
+  ## ILI9881C MIPI-DSI panel driver (the OSOYOO 10.1" controller)
+  espressif/esp_lcd_ili9881c: "^1.1.0"
+  ## Goodix touch driver — GT911 driver also works with the GT9271 on this panel
+  espressif/esp_lcd_touch_gt911: "^1.1.0"
+  ## LVGL + Espressif's LVGL port (display/touch glue for esp_lcd).
+  ## Pinned to LVGL 8.3.x to match SquareLine Studio's LVGL 8 export.
+  lvgl/lvgl: "~8.3.11"
+  espressif/esp_lvgl_port: "~2.8.0"

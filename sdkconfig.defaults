@@ -1,0 +1,39 @@
+# ---- Target ----
+CONFIG_IDF_TARGET="esp32p4"
+
+# ---- Flash / partitions ----
+CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+
+# ---- PSRAM (needed for the 800x1280 framebuffer + LVGL buffers) ----
+# 200MHz HEX PSRAM gives the DSI enough bandwidth to scan out the framebuffer
+# without underruns. On ESP32-P4 the 200M speed is gated behind the experimental
+# features flag, so both must be set together (else it silently drops to 20MHz).
+CONFIG_IDF_EXPERIMENTAL_FEATURES=y
+CONFIG_SPIRAM=y
+CONFIG_SPIRAM_MODE_HEX=y
+CONFIG_SPIRAM_SPEED_200M=y
+CONFIG_SPIRAM_XIP_FROM_PSRAM=y
+CONFIG_SPIRAM_RODATA=y
+CONFIG_SPIRAM_FETCH_INSTRUCTIONS=y
+
+# ---- L2 cache: bigger cache + 128-byte lines = more efficient PSRAM fetches
+# for the DSI DPI scan-out (reduces "underrun" errors). ----
+CONFIG_CACHE_L2_CACHE_256KB=y
+CONFIG_CACHE_L2_CACHE_LINE_128B=y
+
+# ---- CPU / RTOS ----
+CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_360=y
+CONFIG_FREERTOS_HZ=1000
+
+# ---- LVGL ----
+# 16-bit color matches the RGB565 framebuffer we configured.
+CONFIG_LV_COLOR_DEPTH_16=y
+# Fonts used by the UI. Montserrat 20 is what SquareLine's default label uses;
+# 24/48 are kept enabled so you can restyle in SquareLine without a config change.
+CONFIG_LV_FONT_MONTSERRAT_20=y
+CONFIG_LV_FONT_MONTSERRAT_24=y
+CONFIG_LV_FONT_MONTSERRAT_48=y
+# Use the tick from esp_lvgl_port.
+CONFIG_LV_USE_OS=0
