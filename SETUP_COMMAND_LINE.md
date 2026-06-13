@@ -151,7 +151,9 @@ Then run `get_idf` in new terminals instead of the full source command.
 
 1. **Navigate to your project**:
    ```bash
-   cd /path/to/esp32p4-osoyoo-lvgl-10inch
+   cd ~
+   git clone https://github.com/osoyoo/esp32p4-osoyoo-lvgl-10inch
+   cd ~/esp32p4-osoyoo-lvgl-10inch
    ```
 
 2. **Set the target to ESP32-P4**:
