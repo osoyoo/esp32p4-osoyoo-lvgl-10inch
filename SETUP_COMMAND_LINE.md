@@ -17,41 +17,62 @@ Complete guide to set up ESP-IDF and build/flash ESP32-P4 projects using **termi
 
 ### Prerequisites
 
-1. **Install Homebrew** (if not already installed):
+1. **Check if Xcode Command Line Tools are installed**:
+   ```bash
+   xcode-select -p
+   ```
+
+   If you see `/Library/Developer/CommandLineTools`, you're good! Skip to step 2.
+
+   If not installed, run:
+   ```bash
+   xcode-select --install
+   ```
+   Click **Install** when the popup appears.
+
+2. **Install Homebrew** (if not already installed):
    ```bash
    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
    ```
 
-2. **Install required tools**:
+3. **Install required tools**:
    ```bash
    brew install cmake ninja dfu-util python@3.12
    ```
 
-3. **Install Xcode Command Line Tools** (if not already installed):
-   ```bash
-   xcode-select --install
-   ```
+   **Important:** Use Python 3.12 specifically - newer versions (3.14+) may have SSL certificate issues.
 
 ### Install ESP-IDF v5.5.1
 
-1. **Create ESP directory**:
+1. **Create ESP directory and Python symlink**:
    ```bash
    mkdir -p ~/esp
    cd ~/esp
+
+   # Create Python symlink for ESP-IDF (ensures it uses Python 3.12)
+   mkdir -p ~/esp/.pybin
+   ln -sf /usr/local/bin/python3.12 ~/esp/.pybin/python3
+   export PATH="$HOME/esp/.pybin:$PATH"
    ```
 
 2. **Clone ESP-IDF v5.5.1**:
    ```bash
    git clone -b v5.5.1 --depth 1 --recursive --shallow-submodules https://github.com/espressif/esp-idf.git
+   cd esp-idf
    ```
 
-3. **Install ESP32-P4 toolchain**:
+3. **Install ESP32-P4 toolchain** (use Espressif mirror to avoid SSL issues):
    ```bash
-   cd ~/esp/esp-idf
+   # Use Espressif's download mirror (more reliable than GitHub)
+   export IDF_GITHUB_ASSETS="dl.espressif.com/github_assets"
+
+   # Install toolchain
    ./install.sh esp32p4
    ```
 
    This takes 5-10 minutes. It downloads compilers, debuggers, and Python packages.
+
+   **If you see SSL certificate errors**, the mirror setting above should fix it. If it still fails, see [Troubleshooting](#troubleshooting).
 
 4. **Set up environment** (run this in every new terminal):
    ```bash
@@ -267,6 +288,39 @@ export.bat
 
 ---
 
+### Issue: SSL Certificate Error During Installation
+
+**Symptom:** `[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate`
+
+**Solution:** Use Espressif's download mirror instead of GitHub:
+
+```bash
+export IDF_GITHUB_ASSETS="dl.espressif.com/github_assets"
+./install.sh esp32p4
+```
+
+**Alternative Solution** (if mirror doesn't work):
+
+1. Make sure you're using Python 3.12 (not 3.14 or newer):
+   ```bash
+   python3 --version  # Should show 3.12.x
+   ```
+
+2. If using wrong Python version, create symlink:
+   ```bash
+   mkdir -p ~/esp/.pybin
+   ln -sf /usr/local/bin/python3.12 ~/esp/.pybin/python3
+   export PATH="$HOME/esp/.pybin:$PATH"
+   ```
+
+3. Try installation again with mirror:
+   ```bash
+   export IDF_GITHUB_ASSETS="dl.espressif.com/github_assets"
+   ./install.sh esp32p4
+   ```
+
+---
+
 ### Issue: `Chip revision v1.3 but bootloader requires v3.1+`
 
 **Solution:** Your ESP32-P4 chip is an older revision. Edit `sdkconfig.defaults`:
@@ -369,7 +423,17 @@ Then log out and back in.
 ## Quick Reference Card
 
 ```bash
-# Activate ESP-IDF environment
+# Install ESP-IDF (one-time setup)
+brew install python@3.12                  # macOS - install Python
+mkdir -p ~/esp/.pybin
+ln -sf /usr/local/bin/python3.12 ~/esp/.pybin/python3
+export PATH="$HOME/esp/.pybin:$PATH"
+export IDF_GITHUB_ASSETS="dl.espressif.com/github_assets"
+git clone -b v5.5.1 --depth 1 --recursive https://github.com/espressif/esp-idf.git ~/esp/esp-idf
+cd ~/esp/esp-idf
+./install.sh esp32p4
+
+# Activate ESP-IDF environment (every new terminal)
 source ~/esp/esp-idf/export.sh           # macOS/Linux
 export.bat                                # Windows
 
